@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Itunes Getter</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script>
+  $(document).ready(function(){
+     $('#itunesForm').submit(function (e) {
+         e.preventDefault();
+         // get all the inputs into an array.
+         var itunes_url = document.getElementById("itunes_url").value;
+
+         var album_id = itunes_url.split("/id")[1].split("?")[0]
+         var url = "https://itunes.apple.com/lookup?country=jp&entity=song&callback=?&id=" + album_id
+         $.getJSON(url).done(function(response) {
+            console.log(response); 
+            $( ".resultContainer" ).empty()
+            $.each(response.results, function(key,value) {
+              if (value.wrapperType == "track"){
+                $( ".resultContainer" ).append("<br><br>");
+                $( ".resultContainer" ).append("<p>Artist Name: "+value.artistName+"</p>");
+                $( ".resultContainer" ).append("<p>Track Name: "+value.trackName+"</p>");
+                $( ".resultContainer" ).append(`
+                  <audio controls>
+                  <source src="`+value.previewUrl+`" type="audio/aac">
+                  Your browser does not support the audio element.
+                  </audio>
+                  `);
+                $( ".resultContainer" ).append("<hr>")
+              }
+
+
+
+              
+            }); 
+         });
+         
+         //alert('Getting!!');
+     });
+  });
+  </script
+</head>
+<body>
+
+<div class="container">
+  <h2>Itunes Preview Link Getter</h2>
+  <form id="itunesForm"role="form">
+    <div class="form-group">
+      <label for="url">Itunes URL:</label>
+      <input type="text" class="form-control" id="itunes_url" placeholder="Enter itunes url">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+  <div class="resultContainer">
+  </div>
+</div>
+
+
+
+</body>
+</html>
